@@ -28,7 +28,7 @@ jobs:
             echo "VIRTUAL_ENV=$VIRTUAL_ENV"; } >> "$GITHUB_ENV"
       - run: uv sync --frozen
       - run: pyright
-      - run: ruff
+      - run: ruff check
       - run: pytest
 
   actionlint:
