@@ -1,0 +1,43 @@
+name: Pull Request Check
+run-name: Pull request check for ${{ github.ref_name }}
+
+on: pull_request
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: 0.6.1
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - run: uv venv
+      - run: |
+          chmod +x .venv/bin/activate
+          . .venv/bin/activate
+          { echo "PATH=$PATH"; \
+            echo "PYTHONPATH=$PYTHONPATH"; \
+            echo "VIRTUAL_ENV=$VIRTUAL_ENV"; } >> "$GITHUB_ENV"
+      - run: uv sync --frozen
+      - run: uvx pyright
+      - run: uvx ruff
+      - run: uvx pytest
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "::add-matcher::.github/actionlint-matcher.json"
+        shell: bash
+      - uses: docker://rhysd/actionlint:1.6.25
+        with:
+          args: -color
