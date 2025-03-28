@@ -1,4 +1,4 @@
-sdlfkdef main():
+def main():
     print("Hello from scryfall-mcp!")
 
 
