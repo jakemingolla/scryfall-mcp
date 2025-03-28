@@ -27,9 +27,9 @@ jobs:
             echo "PYTHONPATH=$PYTHONPATH"; \
             echo "VIRTUAL_ENV=$VIRTUAL_ENV"; } >> "$GITHUB_ENV"
       - run: uv sync --frozen
-      - run: uvx pyright
-      - run: uvx ruff
-      - run: uvx pytest
+      - run: pyright
+      - run: ruff
+      - run: pytest
 
   actionlint:
     runs-on: ubuntu-latest
